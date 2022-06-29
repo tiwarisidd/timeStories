@@ -1,0 +1,11 @@
+{
+  "name": "stories",
+  "version": "1.0.0",
+  "description": "An API to scrape latest stories from Time(news website) and serve in json format",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "sidd",
+  "license": "ISC"
+}
