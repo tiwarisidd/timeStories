@@ -11,18 +11,41 @@ const server = http.createServer((req, res) => {
         data += chunk;
       });
       response.on("end", () => {
-        let responseArray = [];
+        let tempResponseArray = [];
+        const first = data.indexOf(`<li class="latest-stories__item">`);
+        const last = data.indexOf(
+          `</li>`,
+          data.lastIndexOf(`<li class="latest-stories__item">`)
+        );
+        // console.log(data.slice(first, last).split("\n"));
         data
-          .match(/<li class="latest-stories__item">>*\n.*<a .*\n.*\w.*\n.*\w>/g)
-          .forEach(v => {
-            responseArray.push({
-              title: v.split(">")[3].split("<")[0],
-              link: `https://time.com${v
-                .split(">")[1]
-                .split("=")[1]
-                .replace(/\"/g, "")}`,
-            });
+          .slice(first, last)
+          .split("\n")
+          .forEach((element, index) => {
+            if (element.includes("href")) {
+              tempResponseArray.push(
+                element.slice(
+                  element.indexOf(`"`) + 1,
+                  element.lastIndexOf(`"`)
+                )
+              );
+            }
+            if (element.includes("</h3")) {
+              tempResponseArray.push(
+                element.slice(
+                  element.indexOf(">") + 1,
+                  element.lastIndexOf("<")
+                )
+              );
+            }
           });
+        let responseArray = [];
+        for (let i = 0; i < tempResponseArray.length; i += 2) {
+          responseArray.push({
+            title: tempResponseArray[i + 1],
+            link: `https://time.com${tempResponseArray[i]}`,
+          });
+        }
         res.writeHead(200, { "Content-Type": "application/json" });
         res.write(JSON.stringify(responseArray));
         res.end();
