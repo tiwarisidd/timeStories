@@ -17,7 +17,6 @@ const server = http.createServer((req, res) => {
           `</li>`,
           data.lastIndexOf(`<li class="latest-stories__item">`)
         );
-        // console.log(data.slice(first, last).split("\n"));
         data
           .slice(first, last)
           .split("\n")
